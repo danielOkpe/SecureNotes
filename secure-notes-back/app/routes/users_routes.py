@@ -17,6 +17,12 @@ class UserCreate(BaseModel):
     name: str
     hashed_password: str
 
+
+@router.get("/me")
+async def get_authenticated(current_user = Depends(get_current_user_from_access_cookie)):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return {"isAuthenticated": True, "user": current_user.to_dict()}, 200
     
 @router.get("/id/{user_id}")
 async def get_user(user_id: int, current_user = Depends(get_current_user_from_access_cookie)):

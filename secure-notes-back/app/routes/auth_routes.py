@@ -118,7 +118,6 @@ async def login(credentials: LoginDetails, response: Response, db = Depends(get_
             data={"sub": str(user.id)}, expires_delta=access_token_expires
         )
         response.set_cookie(key="access_token", value=access_token, httponly=True)
-        print(f"access_token : {access_token}")
         return {"message": "Login successful"}, 200
     except Exception as e:
         return {"error": str(e)}, 500
@@ -144,7 +143,7 @@ async def register(credentials: RegisterDetails, response: Response, db = Depend
         await send_email_verification( 
             email=credentials.email,
             subject="Verification Email",
-            body=f"Cliquez ici pour valider votre email {BASE_URL}/verify/{email_verification_token}"
+            body=f"Cliquez ici pour valider votre email {BASE_URL}/verify-email/{email_verification_token}"
         )
         return {"message": "User registered successfully"}, 201
     except Exception as e:
@@ -155,7 +154,7 @@ async def logout(response: Response):
     response.delete_cookie(key="access_token")
     return {"message": "Logged out successfully"}, 200
 
-@router.get("/verify/{token}")
+@router.get("/verify-email/{token}")
 async def verify_email(token: str, db = Depends(get_db)):
     try:
         is_valid = verify_email_token(token)
@@ -177,4 +176,6 @@ async def verify_email(token: str, db = Depends(get_db)):
         return {"message": "Email verified successfully"}, 200
     except Exception as e:
         return {"error": str(e)}, 500
+    
+
 
