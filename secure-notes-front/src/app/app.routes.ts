@@ -1,50 +1,42 @@
-import { Routes } from '@angular/router';
-import { Dashboard } from './pages/dashboard/dashboard';
-import { Login } from './pages/login/login';
-import { Profile } from './pages/profile/profile';
-import { Note } from './pages/note/note';
+import { Router, Routes } from '@angular/router';
 import { inject } from '@angular/core';
 import { Auth } from './services/auth';
 import { map } from 'rxjs';
+import { redirectIfAuthenticated, redirectIfNotAuthenticated, redirectVerifyEmail } from './redirections/auth-redirect';
+
+
 
 export const routes: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: () => {
-
-            return inject(Auth).me().pipe(map((response) => {
-                if(response.isAuthenticated) {
-                    return '/dashboard'
-                }
-                else{
-                    return '/login'
-                }
-            } ));
-        }
+        redirectTo: () => inject(Auth).me().pipe(map((response) => response.isAuthenticated ? '/dashboard' : '/login'))
     },
     {
         path: 'dashboard',
+        canMatch: [redirectIfNotAuthenticated],
         loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard)
     },
     {
-        path:'login',
+        path: 'login',
+        canMatch: [redirectIfAuthenticated],
         loadComponent: () => import('./pages/login/login').then(m => m.Login)
     },
     {
         path: 'profile',
-        loadComponent: () => import('./pages/profile/profile').then(m => m.Profile),
-      
+        canMatch: [redirectIfNotAuthenticated],
+        loadComponent: () => import('./pages/profile/profile').then(m => m.Profile),  
     },
     {
         path: 'notes/:id',
+        canMatch: [redirectIfNotAuthenticated],
         loadComponent: () => import('./pages/note/note').then(m => m.Note),
     
     },
     {
         path: 'verify-email/:token',
-        loadComponent: () => import('./pages/verify-email/verify-email').then(m => m.VerifyEmail)
-
+        canMatch : [redirectVerifyEmail],
+        loadComponent : () => import('./pages/verify-email/verify-email').then(m => m.VerifyEmail)
     },
     {
         path: 'email-error-verification',
