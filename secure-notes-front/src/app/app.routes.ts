@@ -1,4 +1,4 @@
-import { Router, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { inject } from '@angular/core';
 import { Auth } from './services/auth';
 import { map } from 'rxjs';
@@ -31,7 +31,6 @@ export const routes: Routes = [
         path: 'notes/:id',
         canMatch: [redirectIfNotAuthenticated],
         loadComponent: () => import('./pages/note/note').then(m => m.Note),
-    
     },
     {
         path: 'verify-email/:token',

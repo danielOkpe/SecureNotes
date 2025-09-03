@@ -1,1 +1,117 @@
-<p>login works!</p>
+<!-- login.component.html -->
+<div class="login-container">
+  <div class="login-card">
+    <!-- En-tête du formulaire -->
+    <div class="header">
+      <h1 class="title">Connexion</h1>
+      <p class="subtitle">Bienvenue ! Connectez-vous à votre compte</p>
+    </div>
+
+    <!-- Formulaire -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      
+      <!-- Champ Email -->
+      <div class="form-group">
+        <label for="email" class="form-label">
+          <svg class="label-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          Email
+        </label>
+        <div class="input-container">
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="form-input"
+            [class.error]="email?.invalid && email?.touched"
+            placeholder="votre@email.com"
+            autocomplete="email"
+          />
+        </div>
+
+        @if(email?.invalid && email?.touched){
+            <div class="error-message" >
+                {{ getEmailErrorMessage() }}
+            </div>
+        }
+      </div>
+
+      <!-- Champ Mot de passe -->
+      <div class="form-group">
+        <label for="password" class="form-label">
+          <svg class="label-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          Mot de passe
+        </label>
+        <div class="input-container password-container">
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            class="form-input password-input"
+            [class.error]="password?.invalid && password?.touched"
+            placeholder="••••••••"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+          >
+          @if(!showPassword){
+             <!-- Icône œil fermé -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          }
+
+          @if(showPassword){
+              <!-- Icône œil barré -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          }
+          </button>
+        </div>
+
+        @if(password?.invalid && password?.touched){
+            <div class="error-message" >
+                {{ getPasswordErrorMessage() }}
+            </div>
+        }
+      </div>
+
+      <!-- Lien mot de passe oublié -->
+      <div class="forgot-password">
+        <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+      </div>
+
+      <!-- Bouton de connexion -->
+      <button 
+        type="submit" 
+        class="submit-btn"
+        [disabled]="loginForm.invalid"
+        [class.disabled]="loginForm.invalid"
+      >
+        @if (!loginForm.pending) {
+          <span>Se connecter</span>
+        }
+        @if (loginForm.pending) {
+          <div class="loading-spinner"></div>
+        }
+      </button>
+
+      <!-- Lien d'inscription -->
+      <div class="signup-link">
+        <p>Pas encore de compte ? <a href="#" class="link">S'inscrire</a></p>
+      </div>
+    </form>
+  </div>
+</div>

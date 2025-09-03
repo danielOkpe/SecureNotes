@@ -159,7 +159,7 @@ async def verify_email(token: str, db = Depends(get_db)):
     try:
         is_valid = verify_email_token(token)
         if not is_valid:
-            return {"error": "Invalid or expired token"}, 400
+            raise HTTPException(status_code=400, detail='Invalid or expired token')
         decoded_token = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=["HS256"])
         email = decoded_token.get("sub")
         user = UserRepository.get_by_email(db, email=email)
