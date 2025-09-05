@@ -1,0 +1,203 @@
+.create-note-container {
+      min-height: 100vh;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .note-header {
+      background: white;
+      border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border: none;
+      background: transparent;
+      color: #667eea;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .back-btn:hover {
+      background: rgba(102, 126, 234, 0.1);
+      color: #5a67d8;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .save-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+
+    .save-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .save-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .note-editor {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 2rem;
+      gap: 1rem;
+    }
+
+    .note-title-input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2d3748;
+      padding: 1rem 0;
+      font-family: inherit;
+      resize: none;
+      line-height: 1.2;
+    }
+
+    .note-title-input::placeholder {
+      color: #a0aec0;
+      font-weight: 600;
+    }
+
+    .note-content-input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 1.1rem;
+      color: #4a5568;
+      font-family: inherit;
+      line-height: 1.6;
+      resize: none;
+      flex: 1;
+      min-height: 400px;
+      padding: 0;
+    }
+
+    .note-content-input::placeholder {
+      color: #a0aec0;
+    }
+
+    .note-footer {
+      background: white;
+      border-top: 1px solid rgba(102, 126, 234, 0.1);
+      padding: 1rem 2rem;
+      margin-top: auto;
+    }
+
+    .note-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 800px;
+      margin: 0 auto;
+      color: #718096;
+      font-size: 0.875rem;
+    }
+
+    .word-count {
+      font-weight: 500;
+    }
+
+    .last-modified {
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .note-header {
+        padding: 1rem;
+      }
+
+      .back-btn span {
+        display: none;
+      }
+
+      .save-btn span {
+        display: none;
+      }
+
+      .save-btn {
+        padding: 0.75rem;
+        min-width: 44px;
+        justify-content: center;
+      }
+
+      .note-editor {
+        padding: 1rem;
+      }
+
+      .note-title-input {
+        font-size: 1.5rem;
+        padding: 0.5rem 0;
+      }
+
+      .note-content-input {
+        font-size: 1rem;
+      }
+
+      .note-footer {
+        padding: 1rem;
+      }
+
+      .note-info {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+      }
+    }
+
+    /* Style pour le focus */
+    .note-title-input:focus,
+    .note-content-input:focus {
+      outline: none;
+    }
+
+    /* Animation de chargement pour le bouton */
+    .save-btn:disabled svg {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }

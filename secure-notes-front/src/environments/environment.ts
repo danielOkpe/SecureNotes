@@ -1,7 +1,7 @@
 
 export const environment = {
   production: true,
-  apiKey: '',
-  apiUrl: 'http://localhost:8000',
+  secretKey: 'DRbZVnQAvkSmkLFTKOBzB1FJlLm4M03V',
+  apiUrl: '/api',
   appEnv: 'production',
 };

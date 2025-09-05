@@ -32,6 +32,8 @@ export function redirectVerifyEmail(
 
   const token = segments[1]?.path; 
 
+  console.log("token", token);
+
   if (!token) {
     return of(router.createUrlTree(['/email-error-verification']));
   }

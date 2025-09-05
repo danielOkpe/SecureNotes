@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Response, Request, HTTPException, Depends
+from fastapi.responses import JSONResponse
 from app.constants import get_db, SMTP_SERVER, SMTP_PORT, EMAIL_ADDRESS, EMAIL_PASSWORD, BASE_URL
 from app.models import User
 from app.repositories import UserRepository
@@ -108,8 +109,12 @@ def verify_email_token(token: str):
     
 
 @router.post("/login")
-async def login(credentials: LoginDetails, response: Response, db = Depends(get_db)):
+async def login(credentials: LoginDetails, db = Depends(get_db)):
     try:
+        response = JSONResponse(
+        content={"message": "Login successful"},
+        status_code=200
+    )
         user = UserRepository.get_by_email(db, email=credentials.email)
         if not user or not verify_password(credentials.password, user.hashed_password):
             return {"error": "Invalid credentials"}, 401
@@ -117,8 +122,8 @@ async def login(credentials: LoginDetails, response: Response, db = Depends(get_
         access_token = create_access_token(
             data={"sub": str(user.id)}, expires_delta=access_token_expires
         )
-        response.set_cookie(key="access_token", value=access_token, httponly=True)
-        return {"message": "Login successful"}, 200
+        response.set_cookie(key="access_token", value=access_token, httponly=True, path="/", samesite="lax", secure=False, domain='localhost')
+        return response
     except Exception as e:
         return {"error": str(e)}, 500
 
@@ -145,14 +150,18 @@ async def register(credentials: RegisterDetails, response: Response, db = Depend
             subject="Verification Email",
             body=f"Cliquez ici pour valider votre email {BASE_URL}/verify-email/{email_verification_token}"
         )
-        return {"message": "User registered successfully"}, 201
+        return JSONResponse(content={"message": "User registered successfully"}, status_code=201)
     except Exception as e:
         return {"error": str(e)}, 500
 
 @router.post("/logout")
-async def logout(response: Response):
-    response.delete_cookie(key="access_token")
-    return {"message": "Logged out successfully"}, 200
+async def logout():
+    response = JSONResponse(
+        content={"message": "Logged out successfully"},
+        status_code=200
+    )
+    response.delete_cookie(key="access_token", httponly=True, path="/", samesite="lax", secure=False, domain='localhost')
+    return response
 
 @router.get("/verify-email/{token}")
 async def verify_email(token: str, db = Depends(get_db)):
@@ -173,7 +182,7 @@ async def verify_email(token: str, db = Depends(get_db)):
             is_email_verified=True
             )
         UserRepository.update(db, user=updated_user)
-        return {"message": "Email verified successfully"}, 200
+        return JSONResponse(content={"message": "Email verified successfully"}, status_code=200)
     except Exception as e:
         return {"error": str(e)}, 500
     

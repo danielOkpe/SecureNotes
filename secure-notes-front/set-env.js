@@ -9,7 +9,7 @@ const targetPathDev = './src/environments/environment.development.ts';
 const envConfig = `
 export const environment = {
   production: false,
-  apiKey: '${process.env['API_KEY'] || ''}',
+  secretKey: '${process.env['SECRET_KEY'] || ''}',
   apiUrl: '${process.env['API_URL'] || ''}',
   appEnv: '${process.env['APP_ENV'] || 'development'}',
 };
@@ -18,7 +18,7 @@ export const environment = {
 const envConfigProd = `
 export const environment = {
   production: true,
-  apiKey: '${process.env['API_KEY'] || ''}',
+  secretKey: '${process.env['SECRET_KEY'] || ''}',
   apiUrl: '${process.env['API_URL'] || ''}',
   appEnv: '${process.env['APP_ENV'] || 'production'}',
 };

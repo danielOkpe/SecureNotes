@@ -21,9 +21,10 @@ class User(Base):
             "id": self.id,
             "email": self.email,
             "name": self.name,
+            "hashed_password": self.hashed_password,
             "is_email_verified": self.is_email_verified,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }       
 
 class Note(Base):
@@ -44,6 +45,6 @@ class Note(Base):
             "title": self.title,
             "content": self.content,
             "owner_id": self.owner_id,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }

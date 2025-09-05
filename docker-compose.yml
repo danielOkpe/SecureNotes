@@ -1,0 +1,52 @@
+services:
+  angular-app:
+    build: ./secure-notes-front
+    container_name: angular_app
+    ports:
+      - "80:80"
+    depends_on:
+      fastapi:
+        condition: service_healthy
+
+  fastapi:
+    build: ./secure-notes-back
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./secure-notes-back:/fast-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://postgres:root@postgres:5432/secure_notes
+      - CORS_ORIGINS=http://localhost:4200,http://127.0.0.1:4200,http://localhost,http://127.0.0.1
+      - BASE_URL=http://localhost
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: secure_notes
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d secure_notes"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  postgres_data:
+  jenkins_home:

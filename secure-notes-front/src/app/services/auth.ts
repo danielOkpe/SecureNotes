@@ -16,7 +16,6 @@ export class Auth {
   login(credentials : LoginDetails): Observable<{success: boolean, message: string}>{
     return this.http.post<{message?: string, error?: string}>(`${BASE_URL}/auth/login`, credentials, {
         observe: 'response', // pour accéder au status HTTP
-        withCredentials: true // très important pour que le cookie HttpOnly soit reçu
       }).pipe(
 
         map(res => {
@@ -59,7 +58,6 @@ export class Auth {
   logout(): Observable<{success: boolean, message: string}>{
     return this.http.post<{message?: string, error?:string}>(`${BASE_URL}/auth/logout`,{}, {
         observe: 'response', // pour accéder au status HTTP
-        withCredentials: true // très important pour que le cookie HttpOnly soit reçu
       }).pipe(
         map(
           res => {
@@ -81,16 +79,20 @@ export class Auth {
 
   me(): Observable<Authenticated> {
     return this.http.get<Authenticated>(`${BASE_URL}/users/me`, { 
-      withCredentials: true 
     }).pipe(
-      tap(response => {
-        console.log('Réponse d\'authentification:', response);
+      map(response => {
+        console.log("response", response)
+        if (response.isAuthenticated ) {
+          return { isAuthenticated: true, user: response.user };
+        }
+        return { isAuthenticated: false, user: null };
       }),
       catchError((error: HttpErrorResponse) => {
-          return of({ isAuthenticated: false, user: null } as Authenticated);
+        return of({ isAuthenticated: false, user: null } as Authenticated);
       })
     );
   }
+
 
   verifyEmail(token : string) : Observable<{valid: boolean}>{
     return this.http.get<{ message?: string; error?: string }>(`${BASE_URL}/auth/verify-email/${token}`).pipe(

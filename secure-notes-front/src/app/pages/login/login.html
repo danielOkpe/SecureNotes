@@ -27,7 +27,6 @@
             class="form-input"
             [class.error]="email?.invalid && email?.touched"
             placeholder="votre@email.com"
-            autocomplete="email"
           />
         </div>
 
@@ -55,7 +54,6 @@
             class="form-input password-input"
             [class.error]="password?.invalid && password?.touched"
             placeholder="••••••••"
-            autocomplete="current-password"
           />
           <button
             type="button"
@@ -110,7 +108,7 @@
 
       <!-- Lien d'inscription -->
       <div class="signup-link">
-        <p>Pas encore de compte ? <a href="#" class="link">S'inscrire</a></p>
+        <p>Pas encore de compte ? <a href="#" class="link" routerLink="/register">S'inscrire</a></p>
       </div>
     </form>
   </div>

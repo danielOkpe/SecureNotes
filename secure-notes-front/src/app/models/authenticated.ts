@@ -1,4 +1,4 @@
-import { User } from "../services/user";
+import { User } from "../models/user";
 
 export interface Authenticated{
     isAuthenticated: boolean;

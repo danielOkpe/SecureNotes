@@ -10,7 +10,18 @@ export const routes: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: () => inject(Auth).me().pipe(map((response) => response.isAuthenticated ? '/dashboard' : '/login'))
+        redirectTo: () => inject(Auth).me().pipe(map((response) => {
+            if (response.isAuthenticated) {
+                if(+localStorage.getItem("userId")! != response.user?.id || localStorage.getItem("userId") === null){
+                    console.log(response.user?.id)
+                    localStorage.removeItem("userId");
+                    localStorage.setItem("userId",'' +  response.user?.id);
+                }
+                return '/dashboard';
+            }else{
+                return '/login';
+            }
+        }))
     },
     {
         path: 'dashboard',
@@ -23,14 +34,24 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/login/login').then(m => m.Login)
     },
     {
+        path:'register',
+        canMatch: [redirectIfAuthenticated],
+        loadComponent: () => import('./pages/register/register').then(m => m.Register)
+    },
+    {
         path: 'profile',
         canMatch: [redirectIfNotAuthenticated],
         loadComponent: () => import('./pages/profile/profile').then(m => m.Profile),  
     },
     {
-        path: 'notes/:id',
+        path: 'note/:id',
         canMatch: [redirectIfNotAuthenticated],
-        loadComponent: () => import('./pages/note/note').then(m => m.Note),
+        loadComponent: () => import('./pages/edit-note/edit-note').then(m => m.EditNote),
+    },
+    {
+        path: 'create-note',
+        canMatch: [redirectIfNotAuthenticated],
+        loadComponent: () => import('./pages/create-note/create-note').then(m => m.CreateNote)
     },
     {
         path: 'verify-email/:token',

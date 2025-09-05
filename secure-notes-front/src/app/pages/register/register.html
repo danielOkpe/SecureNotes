@@ -1,0 +1,249 @@
+<div class="register-container">
+  <div class="register-card">
+
+    <!-- En-tête -->
+    <div class="header">
+      <h1 class="title">Inscription</h1>
+      <p class="subtitle">Étape {{ step + 1 }} sur 3</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      
+      <!-- ÉTAPE 1: Nom -->
+      @if (step === 0) {
+        <div class="step-content">
+          <h2 class="step-title">Quel est votre nom ?</h2>
+          
+          <div class="form-group">
+            <label for="name" class="form-label">
+              <svg class="label-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Nom complet
+            </label>
+            <div class="input-container">
+              <input
+                id="name"
+                type="text"
+                formControlName="name"
+                class="form-input"
+                [class.error]="name?.invalid && name?.touched"
+                placeholder="Jean Dupont"
+                autocomplete="name"
+              />
+            </div>
+            @if (name?.invalid && name?.touched) {
+              <div class="error-message">
+                {{ getNameErrorMessage() }}
+              </div>
+            }
+          </div>
+
+          <div class="step-navigation">
+            <button 
+              type="button" 
+              class="nav-btn primary full-width"
+              [disabled]="!canGoToNextStep()"
+              [class.disabled]="!canGoToNextStep()"
+              (click)="nextStep()"
+            >
+              Suivant
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="9,18 15,12 9,6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- ÉTAPE 2: Email -->
+      @if (step === 1) {
+        <div class="step-content">
+          <h2 class="step-title">Quelle est votre adresse e-mail ?</h2>
+          
+          <div class="form-group">
+            <label for="email" class="form-label">
+              <svg class="label-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              Adresse e-mail
+            </label>
+            <div class="input-container">
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                class="form-input"
+                [class.error]="email?.invalid && email?.touched"
+                placeholder="votre@email.com"
+                autocomplete="email"
+              />
+            </div>
+            @if (email?.invalid && email?.touched) {
+              <div class="error-message">
+                {{ getEmailErrorMessage() }}
+              </div>
+            }
+          </div>
+
+          <div class="step-navigation">
+            <button 
+              type="button" 
+              class="nav-btn secondary"
+              (click)="previousStep()"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="15,18 9,12 15,6"></polyline>
+              </svg>
+              Précédent
+            </button>
+            
+            <button 
+              type="button" 
+              class="nav-btn primary"
+              [disabled]="!canGoToNextStep()"
+              [class.disabled]="!canGoToNextStep()"
+              (click)="nextStep()"
+            >
+              Suivant
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="9,18 15,12 9,6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- ÉTAPE 3: Mots de passe -->
+      @if (step === 2) {
+        <div class="step-content">
+          <h2 class="step-title">Créez votre mot de passe</h2>
+          
+          <!-- Mot de passe principal -->
+          <div class="form-group">
+            <label for="password" class="form-label">
+              <svg class="label-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              Mot de passe
+            </label>
+            <div class="input-container password-container">
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                class="form-input password-input"
+                [class.error]="password?.invalid && password?.touched"
+                placeholder="••••••••••••"
+                autocomplete="new-password"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility()"
+                [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+              >
+                @if (!showPassword) {
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                }
+                @if (showPassword) {
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                }
+              </button>
+            </div>
+            @if (password?.invalid && password?.touched) {
+              <div class="error-message">
+                {{ getPasswordErrorMessage() }}
+              </div>
+            }
+          </div>
+
+          <!-- Confirmation mot de passe -->
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">
+              <svg class="label-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              Confirmer le mot de passe
+            </label>
+            <div class="input-container password-container">
+              <input
+                id="confirmPassword"
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                formControlName="confirmPassword"
+                class="form-input password-input"
+                [class.error]="(confirmPassword?.invalid && confirmPassword?.touched) || registerForm.hasError('passwordMismatch')"
+                placeholder="••••••••••••"
+                autocomplete="new-password"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="toggleConfirmPasswordVisibility()"
+                [attr.aria-label]="showConfirmPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+              >
+                @if (!showConfirmPassword) {
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                }
+                @if (showConfirmPassword) {
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                }
+              </button>
+            </div>
+            @if ((confirmPassword?.invalid && confirmPassword?.touched) || registerForm.hasError('passwordMismatch')) {
+              <div class="error-message">
+                {{ getConfirmPasswordErrorMessage() }}
+              </div>
+            }
+          </div>
+
+          <div class="step-navigation">
+            <button 
+              type="button" 
+              class="nav-btn secondary"
+              (click)="previousStep()"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="15,18 9,12 15,6"></polyline>
+              </svg>
+              Précédent
+            </button>
+            
+            <button 
+              type="submit" 
+              class="nav-btn primary"
+              [disabled]="registerForm.invalid"
+              [class.disabled]="registerForm.invalid"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="20,6 9,17 4,12"></polyline>
+              </svg>
+              S'inscrire
+            </button>
+          </div>
+        </div>
+      }
+    </form>
+
+    <!-- Lien vers la connexion -->
+    <div class="signup-link">
+      <p>Déjà un compte ? <a href="#" class="link">Se connecter</a></p>
+    </div>
+  </div>
+</div>
