@@ -1,9 +1,19 @@
 <app-navbar />
 
 <div class="dashboard-container">
-@for(note of notes; track note.id){
-    <app-note-item style="width: 100%;" [note]="note"></app-note-item>
-}
+  @if (isLoading) {
+    <div class="loading-state">
+      <p>Chargement de vos notes...</p>
+    </div>
+  } @else if (notes.length === 0) {
+    <div class="empty-state">
+      <p>Aucune note trouvée</p>
+    </div>
+  } @else {
+    @for(note of notes; track note.id){
+      <app-note-item style="width: 100%;" [note]="note"></app-note-item>
+    }
+  }
 </div>
 
 <button class="create-note-btn" routerLink="/create-note" title="Créer une nouvelle note">
