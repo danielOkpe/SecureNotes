@@ -28,7 +28,11 @@ export class Dashboard implements OnInit {
     )
     .subscribe({
        next: (res) => {
-       this.notes = res;
+       this.notes = res.sort((a, b) => {
+          const dateA = new Date(a.updated_at || a.created_at);
+          const dateB = new Date(b.updated_at || b.created_at);
+          return dateB.getTime() - dateA.getTime(); 
+        });
        console.log('my notes', this.notes)
       },
       error: (error) => {

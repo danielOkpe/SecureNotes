@@ -2,7 +2,13 @@ import { Routes } from '@angular/router';
 import { inject } from '@angular/core';
 import { Auth } from './services/auth';
 import { map } from 'rxjs';
-import { redirectIfAuthenticated, redirectIfNotAuthenticated, redirectVerifyEmail } from './redirections/auth-redirect';
+import { 
+        redirectIfAuthenticated, 
+        redirectIfEmailNotVerify,
+        redirectIfNotAuthenticated, 
+        redirectVerifyEmail, 
+        redirectIfEmailVerify 
+    } from './redirections/auth-redirect';
 
 
 
@@ -14,7 +20,6 @@ export const routes: Routes = [
             if (response.isAuthenticated) {
                 if(+localStorage.getItem("userId")! != response.user?.id || localStorage.getItem("userId") === null){
                     console.log(response.user?.id)
-                    localStorage.removeItem("userId");
                     localStorage.setItem("userId",'' +  response.user?.id);
                 }
                 return '/dashboard';
@@ -25,7 +30,7 @@ export const routes: Routes = [
     },
     {
         path: 'dashboard',
-        canMatch: [redirectIfNotAuthenticated],
+        canMatch: [redirectIfNotAuthenticated, redirectIfEmailNotVerify],
         loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard)
     },
     {
@@ -40,17 +45,17 @@ export const routes: Routes = [
     },
     {
         path: 'profile',
-        canMatch: [redirectIfNotAuthenticated],
+        canMatch: [redirectIfNotAuthenticated, redirectIfEmailNotVerify],
         loadComponent: () => import('./pages/profile/profile').then(m => m.Profile),  
     },
     {
         path: 'note/:id',
-        canMatch: [redirectIfNotAuthenticated],
+        canMatch: [redirectIfNotAuthenticated, redirectIfEmailNotVerify],
         loadComponent: () => import('./pages/edit-note/edit-note').then(m => m.EditNote),
     },
     {
         path: 'create-note',
-        canMatch: [redirectIfNotAuthenticated],
+        canMatch: [redirectIfNotAuthenticated, redirectIfEmailNotVerify],
         loadComponent: () => import('./pages/create-note/create-note').then(m => m.CreateNote)
     },
     {
@@ -60,7 +65,13 @@ export const routes: Routes = [
     },
     {
         path: 'email-error-verification',
+        canMatch:[redirectVerifyEmail],
         loadComponent: () => import('./pages/email-error-verification/email-error-verification').then(m => m.EmailErrorVerification)
+    },
+    {
+        path: 'email-not-valid',
+        canMatch:[redirectIfEmailVerify, redirectIfNotAuthenticated],
+        loadComponent: () => import('./pages/email-not-valid/email-not-valid').then(m => m.EmailNotValid)
     },
     {
         path: '404',

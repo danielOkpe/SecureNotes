@@ -32,8 +32,8 @@ async def read_note(
             raise HTTPException(status_code=404, detail="Note not found")
         
         # Vérifier que l'utilisateur a le droit d'accéder à cette note
-        # if note.user_id != current_user.id:
-        #     raise HTTPException(status_code=403, detail="Access denied")
+        if note.owner_id != current_user.id:
+            raise HTTPException(status_code=403, detail="Access denied")
         
         return note.to_dict()
     except HTTPException:
@@ -48,6 +48,10 @@ async def read_notes_by_user(user_id: int, current_user: User = Depends(get_curr
         if not user:
             return JSONResponse(content={"message": "User not found"}, status_code=404)
         notes = NoteRepository.get_by_user_id(db=db, user_id=user_id, skip=SKIP, limit=LIMIT)
+
+        for note in notes :
+            if note.owner_id != current_user.id :
+                raise HTTPException(status_code=403, detail="Access denied")
 
         return JSONResponse(content=[note.to_dict() for note in notes], status_code=200)
     except Exception as e:
@@ -77,6 +81,9 @@ async def update_note(
         if not note:
             return JSONResponse(content={"message": "Note not found"}, status_code=404)
         
+        if note.owner_id != current_user.id:
+            raise HTTPException(status_code=403, detail="Access denied")
+        
         update_note = Note(
             id= note_id,
             title=note_data.title,
@@ -95,6 +102,10 @@ async def delete_note(note_id: int, current_user: User = Depends(get_current_use
         note = NoteRepository.get_by_id(db=db, note_id=note_id)
         if not note:
             return JSONResponse(content={"message": "Note not found"}, status_code=404)
+        
+        if note.owner_id != current_user.id:
+            raise HTTPException(status_code=403, detail="Access denied")
+        
         NoteRepository.delete(db=db, note=note)
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)

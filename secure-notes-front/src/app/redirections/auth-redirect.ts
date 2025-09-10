@@ -2,19 +2,21 @@ import { inject } from "@angular/core";
 import { Route, Router, UrlSegment, UrlTree } from "@angular/router";
 import { map, Observable, of } from "rxjs";
 import { Auth } from "../services/auth";
+import e from "express";
 
 export function redirectIfAuthenticated() : Observable<boolean | UrlTree> {
-     const router = inject(Router); 
-            const auth = inject(Auth);
-            return auth.me().pipe(
-            map(res => res.isAuthenticated
-                ? router.createUrlTree(['/dashboard'])
-                : true)
-            );
+  const router = inject(Router); 
+  const auth = inject(Auth);
+  return auth.me().pipe(
+    map(res => res.isAuthenticated
+          ? router.createUrlTree(['/dashboard'])
+          : true
+    )
+  );
 }
 
 export function redirectIfNotAuthenticated() : Observable<boolean | UrlTree> {
-     const router = inject(Router); 
+    const router = inject(Router); 
             const auth = inject(Auth);
             return auth.me().pipe(
             map(res => res.isAuthenticated
@@ -44,4 +46,28 @@ export function redirectVerifyEmail(
       : router.createUrlTree(['/email-error-verification']) 
     )
   );
+}
+
+export function redirectIfEmailVerify() : Observable<boolean | UrlTree> {
+    const router = inject(Router);
+    const auth = inject(Auth);
+
+    return auth.me().pipe(
+      map(
+        (res) => res.user?.is_email_verified ? router.createUrlTree(['/']) : true
+      )
+    );
+
+}
+
+export function redirectIfEmailNotVerify() : Observable<boolean | UrlTree> {
+    const router = inject(Router);
+    const auth = inject(Auth);
+
+    return auth.me().pipe(
+      map(
+        (res) => res.user?.is_email_verified ? true : router.createUrlTree(['/email-not-valid'])
+      )
+    );
+
 }

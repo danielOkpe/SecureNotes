@@ -3,11 +3,10 @@ import { ReactiveFormsModule, Validators, FormBuilder, FormGroup, AbstractContro
 import { Auth } from '../../services/auth';
 import { RegisterDetails } from '../../models/register';
 import { Router } from '@angular/router';
-import { Navbar } from "../../components/navbar/navbar";
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, Navbar],
+  imports: [ReactiveFormsModule],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })

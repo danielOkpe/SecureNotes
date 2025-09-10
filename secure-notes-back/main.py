@@ -68,6 +68,7 @@ wait_for_database()
 # Créer les tables une fois que la base est prête
 print("📋 Création des tables...")
 try:
+    #Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     print("✅ Tables créées avec succès")
 except Exception as e:

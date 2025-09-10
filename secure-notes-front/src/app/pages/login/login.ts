@@ -49,9 +49,14 @@ private router = inject(Router);
         password : formData.password
       }
 
-      this.auth.login(loginCredentials).subscribe();
-
-      this.router.navigate(['/']);
+      this.auth.login(loginCredentials).subscribe({
+        next: () => {
+            this.router.navigate(['/']);
+        },
+        error: (error) => {
+          console.error('login error', error);
+        }
+      });
 
     } else {
       // Marquer tous les champs comme touchés pour afficher les erreurs
